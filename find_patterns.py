@@ -95,7 +95,7 @@ def prepare_collection(in_path):
     for f in os.listdir(in_path):
         vol_name = f.split('.')[0]
         raw = open_file('{}/{}'.format(in_path, f))
-        raw = clean_string(raw, strip=True, single_spaces=True)
+        raw = clean_string(raw, strip=True, single_spaces=True, tabs2spaces=True, spaces2same=True)
         # pre-processing
         collection[vol_name] = preprocess(raw)
     return collection
