@@ -1,4 +1,4 @@
-from PyTib.common import open_file, write_file, pre_process
+from PyTib.common import open_file, write_file, write_csv, pre_process
 import os
 import re
 from collections import defaultdict
@@ -69,15 +69,6 @@ def write_output(output, out_path, output_type):
         write_file('{}/{}_{}.txt'.format(out_dir, vol, output_type), ' '.join(out))
 
 
-def format_punct_types(punct_types):
-    """sort the punct types by reversed frequency"""
-    formatted = []
-    sorted_keys = sorted(punct_types.keys(), key=lambda x: punct_types[x], reverse=True)
-    for key in sorted_keys:
-        formatted.append('“{}”\t{}'.format(key, punct_types[key]))
-    return '\n'.join(formatted)
-
-
 def find_punct_types(collection):
     """counts the overall frequency of each punct type for the whole collection"""
     types = defaultdict(int)
@@ -86,6 +77,11 @@ def find_punct_types(collection):
             if type(a) == str:
                 types[a] += 1
     return types
+
+
+def sorted_punct_types(types_dict, reverse=True):
+    tupled = [(k, v) for k, v in types_dict.items()]
+    return sorted(tupled, key=lambda x: x[1], reverse=reverse)
 
 
 def missing_dirs():
@@ -166,13 +162,6 @@ def concs_by_freq(prepared, in_path, all_puncts, frequency):
     return all_concs
 
 
-def write_csv(path, rows):
-    with open(path, 'w') as csvfile:
-        writer = csv.writer(csvfile, dialect='excel')
-        for row in rows:
-            writer.writerow(row)
-
-
 def main():
     in_path = '../Derge-Kangyur-raw/ekangyur_raw'  # default is 'input'
     out_path = 'output'
@@ -184,9 +173,8 @@ def main():
     # counting
     print('counting the punctuation types')
     punct_types = find_punct_types(prepared_vols)
-    # sort by inversed frequency and write to csv
-    sorted_types = sorted([(k, v) for k, v in punct_types.items()], key=lambda x: x[1], reverse=True)
-    write_csv('{}/total_types.csv'.format(out_path), sorted_types)
+    # sort by inversed frequency
+    write_csv('{}/total_types.csv'.format(out_path), sorted_punct_types(punct_types), header=['punct', 'frequency', 'to check'])
 
     # processing
     #print('generating "with dots" data')
