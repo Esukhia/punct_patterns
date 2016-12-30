@@ -166,6 +166,13 @@ def concs_by_freq(prepared, in_path, all_puncts, frequency):
     return all_concs
 
 
+def write_csv(path, rows):
+    with open(path, 'w') as csvfile:
+        writer = csv.writer(csvfile, dialect='excel')
+        for row in rows:
+            writer.writerow(row)
+
+
 def main():
     in_path = '../Derge-Kangyur-raw/ekangyur_raw'  # default is 'input'
     out_path = 'output'
@@ -177,6 +184,9 @@ def main():
     # counting
     print('counting the punctuation types')
     punct_types = find_punct_types(prepared_vols)
+    # sort by inversed frequency and write to csv
+    sorted_types = sorted([(k, v) for k, v in punct_types.items()], key=lambda x: x[1], reverse=True)
+    write_csv('{}/total_types.csv'.format(out_path), sorted_types)
 
     # processing
     #print('generating "with dots" data')
@@ -187,8 +197,6 @@ def main():
     # save results
     print('writing outputs')
     write_output(dots, out_path, 'with_dots')
-
-    write_file('{}/total_types.txt'.format(out_path), format_punct_types(punct_types))
 
 
 if __name__ == '__main__':
