@@ -90,7 +90,11 @@ def missing_dirs():
 
 
 def prepare_collection(in_path):
-    """wrapper function """
+    """
+    warning : the returned punctuation is the one processed by clean_string() and not the raw one.
+    :param in_path:
+    :return:
+    """
     collection = {}
     for f in os.listdir(in_path):
         vol_name = f.split('.')[0]
@@ -178,13 +182,11 @@ def main():
 
     # processing
     #print('generating "with dots" data')
-    dots = collection_dots(prepared_vols)
+    # dots = collection_dots(prepared_vols)
+    # write_output(dots, out_path, 'with_dots')
 
-    # concordances = concs_by_freq(prepared_vols, in_path, punct_types, 1)
-
-    # save results
-    print('writing outputs')
-    write_output(dots, out_path, 'with_dots')
+    concordances = concs_by_freq(prepared_vols, in_path, punct_types, 1)
+    print('ok')
 
 
 if __name__ == '__main__':
