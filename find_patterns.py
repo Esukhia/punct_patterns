@@ -1,8 +1,7 @@
-from PyTib.common import open_file, write_file, write_csv, pre_process
+from PyTib.common import open_file, write_file, write_csv, pre_process, clean_string
 import os
 import re
 from collections import defaultdict
-import csv
 import pickle
 import regex
 
@@ -95,7 +94,8 @@ def prepare_collection(in_path):
     collection = {}
     for f in os.listdir(in_path):
         vol_name = f.split('.')[0]
-        raw = open_file('{}/{}'.format(in_path, f)).strip()
+        raw = open_file('{}/{}'.format(in_path, f))
+        raw = clean_string(raw, strip=True, single_spaces=True)
         # pre-processing
         collection[vol_name] = preprocess(raw)
     return collection
@@ -173,14 +173,14 @@ def main():
     # counting
     print('counting the punctuation types')
     punct_types = find_punct_types(prepared_vols)
-    # sort by inversed frequency
+    # sort by inversed frequency and write to csv
     write_csv('{}/total_types.csv'.format(out_path), sorted_punct_types(punct_types), header=['punct', 'frequency', 'to check'])
 
     # processing
     #print('generating "with dots" data')
     dots = collection_dots(prepared_vols)
 
-    concordances = concs_by_freq(prepared_vols, in_path, punct_types, 1)
+    # concordances = concs_by_freq(prepared_vols, in_path, punct_types, 1)
 
     # save results
     print('writing outputs')
