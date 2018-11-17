@@ -124,9 +124,9 @@ def open_prepared(in_path):
 
 
 def full_text_conc(in_path, vol_name, punct):
-    full_vol = open_file('{}/{}'.format(in_path, vol_name))
+    full_vol = open_file('{}/{}.txt'.format(in_path, vol_name))
     conc = regex.search(punct, full_vol)
-    conc.detach_string()
+    # conc.detach_string()
     return conc
 
 
@@ -167,7 +167,7 @@ def concs_by_freq(prepared, in_path, all_puncts, frequency):
 
 
 def main():
-    in_path = '../Derge-Kangyur-raw/ekangyur_raw'  # default is 'input'
+    in_path = '../derge-tengyur/derge-tengyur-tags'  # default is 'input'
     out_path = 'output'
     missing_dirs()
 
@@ -181,11 +181,11 @@ def main():
     write_csv('{}/total_types.csv'.format(out_path), sorted_punct_types(punct_types), header=['punct', 'frequency', 'to check'])
 
     # processing
-    #print('generating "with dots" data')
-    # dots = collection_dots(prepared_vols)
-    # write_output(dots, out_path, 'with_dots')
+    print('generating "with dots" data')
+    dots = collection_dots(prepared_vols)
+    write_output(dots, out_path, 'with_dots')
 
-    concordances = concs_by_freq(prepared_vols, in_path, punct_types, 1)
+    # concordances = concs_by_freq(prepared_vols, in_path, punct_types, 1)
     print('ok')
 
 
